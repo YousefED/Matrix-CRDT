@@ -54,6 +54,11 @@ jobs:
           interval: 500
 
       - name: Build packages
+          run: npm run build
+          env:
+            CI: true
+
+      - name: Run tests
         run: npm run test
 
       - name: Upload to coveralls
