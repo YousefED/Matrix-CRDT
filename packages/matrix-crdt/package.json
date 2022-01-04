@@ -9,12 +9,9 @@
   "private": false,
   "license": "MPL-2.0",
   "dependencies": {
-    "lib0": "^0.2.42",
     "lodash": "^4.17.21",
     "simple-peer": "^9.11.0",
-    "vscode-lib": "^0.1.0",
-    "y-protocols": "^1.0.5",
-    "yjs": "^13.5.16"
+    "vscode-lib": "^0.1.0"
   },
   "devDependencies": {
     "cross-fetch": "^3.1.4",
@@ -31,10 +28,16 @@
     "@matrix-org/olm": "^3.2.2",
     "matrix-js-sdk": "^12.4.0",
     "@types/autocannon": "4.1.1",
-    "autocannon": "^7.4.0"
+    "autocannon": "^7.4.0",
+    "lib0": "^0.2.42",
+    "y-protocols": "^1.0.5",
+    "yjs": "^13.5.16"
   },
   "peerDependencies": {
-    "matrix-js-sdk": "*"
+    "matrix-js-sdk": "*",
+    "lib0": "*",
+    "y-protocols": "*",
+    "yjs": "*"
   },
   "files": [
     "/dist",
@@ -47,6 +50,7 @@
     "clean": "rimraf dist && rimraf types",
     "build": "npm run clean && tsc -p tsconfig.json",
     "test": "jest --coverage=true --config=jest.config.js",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "bench": "NODE_OPTIONS='--max-old-space-size=4096' ts-node --files -O '{\"module\":\"commonjs\"}' src/matrix-crdt/benchmark/benchmarkTest.ts "
   }
 }

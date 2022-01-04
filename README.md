@@ -54,7 +54,7 @@ You can also use [SyncedStore](https://syncedstore.org/docs/) and use Matrix-CRD
 
 # Development
 
-We use [Lerna](https://lerna.js.org/) to manage the monorepo with separate packages. In VS Code, it's best to open `typecell.code-workspace` to open the project as a workspace.
+We use [Lerna](https://lerna.js.org/) to manage the monorepo with separate packages.
 
 ## Running
 
