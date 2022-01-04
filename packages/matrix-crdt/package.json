@@ -1,0 +1,56 @@
+{
+  "name": "matrix-crdt",
+  "description": "",
+  "homepage": "https://github.com/YousefED/matrix-crdt",
+  "author": {
+    "name": "Yousef El-Dardiry"
+  },
+  "version": "0.0.3",
+  "private": false,
+  "license": "MPL-2.0",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "simple-peer": "^9.11.0",
+    "vscode-lib": "^0.1.0"
+  },
+  "devDependencies": {
+    "cross-fetch": "^3.1.4",
+    "@types/lodash": "^4.14.178",
+    "@types/qs": "^6.9.7",
+    "@peculiar/webcrypto": "^1.1.7",
+    "@types/simple-peer": "^9.11.3",
+    "jest": "26.6.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.4",
+    "typescript": "^4.4.4",
+    "got": "^11.8.2",
+    "qs": "^6.10.2",
+    "@matrix-org/olm": "^3.2.2",
+    "matrix-js-sdk": "^12.4.0",
+    "@types/autocannon": "4.1.1",
+    "autocannon": "^7.4.0",
+    "lib0": "^0.2.42",
+    "y-protocols": "^1.0.5",
+    "yjs": "^13.5.16"
+  },
+  "peerDependencies": {
+    "matrix-js-sdk": "*",
+    "lib0": "*",
+    "y-protocols": "*",
+    "yjs": "*"
+  },
+  "files": [
+    "/dist",
+    "/types"
+  ],
+  "source": "src/index.ts",
+  "types": "types/index.d.ts",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist && rimraf types",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "test": "jest --coverage=true --config=jest.config.js",
+    "watch": "tsc --watch",
+    "bench": "NODE_OPTIONS='--max-old-space-size=4096' ts-node --files -O '{\"module\":\"commonjs\"}' src/matrix-crdt/benchmark/benchmarkTest.ts "
+  }
+}

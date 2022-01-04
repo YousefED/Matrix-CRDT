@@ -1,0 +1,27 @@
+{
+  "name": "root",
+  "private": true,
+  "license": "MPL-2.0",
+  "scripts": {
+    "install-lerna": "npm install --no-package-lock",
+    "postinstall": "npm run bootstrap",
+    "bootstrap": "lerna bootstrap --hoist --ci",
+    "install-new-packages": "lerna bootstrap --hoist",
+    "test": "jest --coverage=true --config=jest.config.js",
+    "build": "lerna run build --concurrency 1",
+    "prepublishOnly": "npm run test && npm run build && cp README.md packages/matrix-crdt/README.md",
+    "postpublish": "rm -rf packages/matrix-crdt/README.md",
+    "deploy": "lerna publish",
+    "redeploy": "lerna publish from-package",
+    "watch": "lerna run watch"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0",
+    "@types/jest": "^26.0.22",
+    "jest": "26.6.0",
+    "microbundle": "^0.13.0",
+    "ts-jest": "^26.5.4",
+    "ts-node": "9.1.1",
+    "typescript": "^4.4.4"
+  }
+}
