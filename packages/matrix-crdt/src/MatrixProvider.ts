@@ -24,6 +24,35 @@ const DEFAULT_OPTIONS = {
   translator: {} as MatrixCRDTEventTranslatorOptions,
 };
 
+/**
+ * {
+ *  // Options for `ThrottledMatrixWriter`
+ *  writer: {
+ *    // throttle flushing write events to matrix by 500ms
+ *    flushInterval: number = 500,
+ *    // if writing to the room fails, wait 30 seconds before retrying
+ *    retryIfForbiddenInterval: number = 30000
+ *  },
+ *  // Options for `MatrixCRDTEventTranslator`
+ *  translator: {
+ *    // set to true to send everything encapsulated in a m.room.message,
+ *    // so you can view and debug messages easily in element or other matrix clients
+ *    updatesAsRegularMessages: false,
+ *    // The event type to use for updates
+ *    updateEventType: "matrix-crdt.doc_update",
+ *    // The event type to use for snapshots
+ *    snapshotEventType: "matrix-crdt.doc_snapshot",
+ *  }
+ *  // Experimental; we can use WebRTC to sync updates instantly over WebRTC.
+ *  // See SignedWebrtcProvider.ts for more details + motivation
+ *  enableExperimentalWebrtcSync: boolean = false
+ *  // Options for MatrixReader
+ *  reader: {
+ *    // How often to send a summary snapshot (defaults to once every 30 events)
+ *    snapshotInterval: number = 30,
+ *  },
+ * }
+ */
 export type MatrixProviderOptions = Partial<typeof DEFAULT_OPTIONS>;
 
 /**
@@ -80,9 +109,9 @@ export class MatrixProvider extends lifecycle.Disposable {
   public totalEventsReceived = 0;
 
   /**
-   *Creates an instance of MatrixProvider.
-   * @param {Y.Doc} doc The Y.Doc to sync over the Matrix Room
-   * @param {MatrixClient} matrixClient A matrix-js-sdk client with
+   * Creates an instance of MatrixProvider.
+   * @param {Y.Doc} doc The `Y.Doc` to sync over the Matrix Room
+   * @param {MatrixClient} matrixClient A `matrix-js-sdk` client with
    * permissions to read (and/or write) from the room
    * @param {({
    *           type: "id";
@@ -93,7 +122,8 @@ export class MatrixProvider extends lifecycle.Disposable {
    *          room id (e.g.: !qporfwt:matrix.org)
    *          to sync the document with.
    * @param {awarenessProtocol.Awareness} [awareness]
-   * @param {MatrixProviderOptions} [opts={}]
+   * Yjs Awareness instance to sync. Only valid if `opts.enableExperimentalWebrtcSync` is true.
+   * @param {MatrixProviderOptions} [opts={}] Additional configuration, all optional. See {@link MatrixProviderOptions}
    * @memberof MatrixProvider
    */
   public constructor(
@@ -220,7 +250,7 @@ export class MatrixProvider extends lifecycle.Disposable {
   /**
    * Experimental; we can use WebRTC to sync updates instantly over WebRTC.
    *
-   * The default Matrix-writer only flushes events every 5 seconds.
+   * The default Matrix-writer only flushes events every 500ms.
    * WebRTC can also sync awareness updates which is not available via Matrix yet.
    * See SignedWebrtcProvider.ts for more details + motivation
    *

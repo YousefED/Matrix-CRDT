@@ -5,7 +5,9 @@ import * as Y from "yjs";
 import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
 
 const DEFAULT_OPTIONS = {
-  flushInterval: process.env.NODE_ENV === "test" ? 100 : 1000 * 5,
+  // throttle flushing write events to matrix by 500ms
+  flushInterval: process.env.NODE_ENV === "test" ? 100 : 100 * 5,
+  // if writing to the room fails, wait 30 seconds before retrying
   retryIfForbiddenInterval: 1000 * 30,
 };
 
