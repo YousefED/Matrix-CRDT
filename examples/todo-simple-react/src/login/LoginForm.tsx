@@ -8,7 +8,6 @@ import {
   Flash,
 } from "@primer/react";
 import React, { useState } from "react";
-import { DEFAULT_TOKEN } from "../token";
 import { LoginData } from "./utils";
 
 export default function LoginForm({
@@ -20,8 +19,8 @@ export default function LoginForm({
 }) {
   const [server, setServer] = useState("https://matrix.org");
   const [user, setUser] = useState("@yousefed:matrix.org");
-  const [token, setToken] = useState(DEFAULT_TOKEN);
-  const [password, setPassword] = useState("6fFf-BQi7wZdGLN7Y");
+  const [token, setToken] = useState("");
+  const [password, setPassword] = useState("");
   const [roomAlias, setRoomAlias] = useState("#matrix-crdt-test:matrix.org");
   const [authMethod, setAuthMethod] = useState<"password" | "token">(
     "password"
