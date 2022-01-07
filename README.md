@@ -6,12 +6,9 @@
 
 Matrix-CRDT enables you to use [Matrix](https://matrix.org/) as a backend for distributed, real-time collaborative web applications that sync automatically.
 
-< TODO >
+## Live demo
 
-- snapshot architecture (and last_event_id)
-- real time (webrtc)
-
-< /TODO >
+See [examples/todo-simple-react](examples/todo-simple-react).
 
 ## Usage with Yjs
 
