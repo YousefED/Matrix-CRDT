@@ -9,6 +9,8 @@ Matrix-CRDT enables you to use [Matrix](https://matrix.org/) as a backend for di
 - snapshot architecture (and last_event_id)
 - real time (webrtc)
 
+< /TODO >
+
 ## Usage with Yjs
 
 To setup Matrix-CRDT, 3 steps are needed:
