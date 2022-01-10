@@ -6,6 +6,8 @@
 
 Matrix-CRDT enables you to use [Matrix](https://matrix.org/) as a backend for distributed, real-time collaborative web applications that sync automatically.
 
+The MatrixProvider is a sync provider for [Yjs](https://github.com/yjs/yjs), a proven, high performance CRDT implementation.
+
 ## Live demo
 
 In the [examples](examples) directory, you'll find some live examples:
@@ -21,7 +23,7 @@ In the [examples](examples) directory, you'll find some live examples:
 
 When building local-first software on top of CRDTs, you probably still need a backend so users can access their data across devices and collaborate with each other.
 
-While [Matrix](https://www.matrix.org) is primarily designed for messaging (chat), it's versatile enough to use as a backend for collaborative applications (see [Architecture](#architecture)). The idea is that by building on top of Matrix, developers can focus on building clients and get the following benefits from the Matrix ecosystem:
+While [Matrix](https://www.matrix.org) is primarily designed for messaging (chat), it's versatile enough to use as a backend for collaborative applications (see [Architecture](#architecture)). The idea is that by building on top of Matrix, developers can focus on building clients and get the following benefits from the Matrix ecosystem out-of-the-box:
 
 - An open standard and active community
 - Multiple server implementations (including hosted servers)
@@ -32,7 +34,7 @@ While [Matrix](https://www.matrix.org) is primarily designed for messaging (chat
 
 # Usage
 
-Matrix-CRDT currently works with Yjs or SyncedStore.
+Matrix-CRDT currently works with [Yjs](https://github.com/yjs/yjs) or [SyncedStore](https://www.syncedstore.org).
 
 ## Usage with Yjs
 
