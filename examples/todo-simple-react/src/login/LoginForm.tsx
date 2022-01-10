@@ -154,10 +154,6 @@ export default function LoginForm({
             </InputField.Caption>
           </InputField>
         </FormGroup>
-        {/* <ButtonPrimary
-          onClick={() => setMatrixCredentials(server, user, token, roomAlias)}>
-          Sign in
-        </ButtonPrimary> */}
       </Box>
     </div>
   );

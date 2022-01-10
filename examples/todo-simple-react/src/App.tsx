@@ -1,49 +1,20 @@
 import { Box, Checkbox, Heading, Text, TextInput } from "@primer/react";
 import { getYjsValue } from "@syncedstore/core";
 import { useSyncedStore } from "@syncedstore/react";
-import { MatrixProvider } from "matrix-crdt";
-import { MatrixClient } from "matrix-js-sdk";
-import React, { useState } from "react";
-import { LoginButton } from "./login/LoginButton";
+import * as Y from "yjs";
+import React from "react";
+import MatrixStatusBar from "./MatrixStatusBar";
 import { globalStore } from "./store";
+
 export default function App() {
   const state = useSyncedStore(globalStore);
-  const [isOpen, setIsOpen] = useState(false);
-  const [matrixProvider, setMatrixProvider] = useState<MatrixProvider>();
-
-  // Called when a MatrixClient is available (provided by LoginButton)
-  const setMatrixClient = React.useCallback(
-    (matrixClient: MatrixClient, roomAlias: string) => {
-      if (matrixProvider) {
-        matrixProvider.dispose();
-      }
-      const newMatrixProvider = new MatrixProvider(
-        getYjsValue(globalStore) as any,
-        matrixClient,
-        { type: "alias", alias: roomAlias },
-        undefined,
-        {
-          translator: { updatesAsRegularMessages: true },
-          reader: { snapshotInterval: 10 },
-          writer: { flushInterval: 500 },
-        }
-      );
-      newMatrixProvider.initialize(); // TODO: show status
-      setMatrixProvider(newMatrixProvider);
-    },
-    [matrixProvider]
-  );
 
   return (
     <Box m={3} maxWidth={600} marginLeft={"auto"} marginRight={"auto"} p={3}>
-      <Box textAlign={"right"}>
-        {/* TODO: add options to go offline / webrtc, snapshots etc */}
-        <LoginButton
-          setMatrixClient={setMatrixClient}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
-      </Box>
+      {/* This is the top bar with Sign in button and Matrix status
+          It also takes care of hooking up the Y.Doc to Matrix.
+      */}
+      <MatrixStatusBar doc={getYjsValue(state) as Y.Doc} />
 
       <Heading sx={{ mb: 2 }}>Todo items:</Heading>
 

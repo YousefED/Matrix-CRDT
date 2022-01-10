@@ -8,11 +8,11 @@ import { createMatrixClient, LoginData } from "./utils";
 export const LoginButton = ({
   isOpen,
   setIsOpen,
-  setMatrixClient,
+  onLogin,
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  setMatrixClient: (client: MatrixClient, roomAlias: string) => void;
+  onLogin: (client: MatrixClient, roomAlias: string) => void;
 }) => {
   const [loginData, setLoginData] = React.useState<LoginData>();
   const [status, setStatus] = React.useState<"ok" | "loading" | "failed">("ok");
@@ -27,13 +27,13 @@ export const LoginButton = ({
       try {
         const matrixClient = await createMatrixClient(loginData!);
         setIsOpen(false);
-        setMatrixClient(matrixClient, loginData!.roomAlias);
+        onLogin(matrixClient, loginData!.roomAlias);
         setStatus("ok");
       } catch (e) {
         setStatus("failed");
       }
     })();
-  }, [setIsOpen, loginData, setMatrixClient]);
+  }, [setIsOpen, loginData, onLogin]);
 
   return (
     <>
