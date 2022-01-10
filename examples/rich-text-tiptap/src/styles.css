@@ -1,0 +1,79 @@
+@import "https://unpkg.com/@primer/css@^16.0.0/dist/primer.css";
+
+body {
+  background-color: #f8f9fa;
+}
+
+.editor {
+  background: white;
+  box-shadow: rgba(14, 23, 31, 0.15) 0px 1px 3px 1px;
+  padding: 2em;
+  margin-top: 1em;
+}
+
+.BtnGroup {
+  margin-bottom: 0.5em;
+}
+
+.description {
+  font-style: italic;
+}
+
+/* Basic editor styles */
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+/* Placeholder (at the top) */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror {
+  min-height: 500px;
+  border: 0;
+  outline: none;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.2em;
+}
+.ProseMirror code {
+  background-color: rgba(#616161, 0.1);
+  color: #616161;
+}
+
+.ProseMirror pre {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: "JetBrainsMono", monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+.ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ProseMirror blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid rgba(13, 13, 13, 0.1);
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid rgba(13, 13, 13, 0.1);
+  margin: 2rem 0;
+}
