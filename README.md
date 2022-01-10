@@ -8,7 +8,10 @@ Matrix-CRDT enables you to use [Matrix](https://matrix.org/) as a backend for di
 
 ## Live demo
 
-See [examples/todo-simple-react](examples/todo-simple-react).
+In the [examples](examples) directory, you'll find some live examples:
+
+- [Collaborative Todo list](examples/todo-simple-react)
+- [Collaborative rich text editing](examples/rich-text-tiptap)
 
 ## Usage with Yjs
 
