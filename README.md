@@ -21,7 +21,7 @@ In the [examples](examples) directory, you'll find some live examples:
 
 When building local-first software on top of CRDTs, you probably still need a backend so users can access their data across devices and collaborate with each other.
 
-While [Matrix](https://www.matrix.org) is primarily designed for messaging (chat), it's versatile enough to use it as a backend for collaborative applications (see [Architecture](#architecture)). The idea is that by building on top of the Matrix, you can focus on building clients, and get the following benefits from the Matrix ecosystem:
+While [Matrix](https://www.matrix.org) is primarily designed for messaging (chat), it's versatile enough to use as a backend for collaborative applications (see [Architecture](#architecture)). The idea is that by building on top of Matrix, developers can focus on building clients and get the following benefits from the Matrix ecosystem:
 
 - An open standard and active community
 - Multiple server implementations (including hosted servers)
@@ -82,7 +82,7 @@ You can also use [SyncedStore](https://syncedstore.org/docs/) and use Matrix-CRD
 
 ## API
 
-▸ **new MatrixProvider** (`doc`, `matrixClient`, `room`, `awareness?`, `opts?`): `MatrixProvider`
+**new MatrixProvider** (`doc`, `matrixClient`, `room`, `awareness?`, `opts?`): `MatrixProvider`
 
 The `MatrixProvider` syncs a Matrix room with a Yjs document.
 
@@ -96,7 +96,7 @@ The `MatrixProvider` syncs a Matrix room with a Yjs document.
 | `awareness` (optional) | `awarenessProtocol.Awareness`                                       | A `y-protocols` Awareness instance that can be used to sync "awareness" data over the experimental webrtc bridge. |
 | `opts` (optional)      | `MatrixProviderOptions` (see below)                                 | Configure advanced properties, see below.                                                                         |
 
-▸ **MatrixProviderOptions**
+**MatrixProviderOptions**
 
 Additional configuration options that can be passed to the `MatrixProvider` constructor.
 
