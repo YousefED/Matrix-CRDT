@@ -14,8 +14,6 @@ Create apps like this:
 
 ![screencapture](examples/rich-text-tiptap/richtext.gif)
 
-<div style="text-align:right;margin:0;padding:0"><small>(see demos below)</small></div>
-
 And connect [Matrix](https://matrix.org/) as transport + backend storage. Instead of chat messages (primary use-case of Matrix), we send an event stream of data model updates (for the rich-text demo, these are _document edits_) to Matrix.
 
 ## Live demo
