@@ -174,3 +174,9 @@ Ideally, we'd replace this with Matrix Custom Ephemeral events when that [Spec](
 # Development
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for instructions how to work with this repo (e.g.: installing and building using lerna).
+
+# Credits
+
+Matrix-CRDT is built as part of [TypeCell](https://www.typecell.org). TypeCell is proudly sponsored by the renowned [NLNet foundation](https://nlnet.nl/foundation/) who are on a mission to support an open internet, and protect the privacy and security of internet users. Check them out!
+
+<a href="https://nlnet.nl"><img src="https://nlnet.nl/image/logos/NGIAssure_tag.svg" alt="NLNet" width="100"></a>
