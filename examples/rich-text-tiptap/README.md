@@ -2,3 +2,7 @@ A collaborative Rich Text editing experience (similar to Google Docs) powered by
 
 - [Open live demo](https://bup9l.csb.app/) (via CodeSandbox)
 - [Edit code](https://codesandbox.io/s/github/YousefED/Matrix-CRDT/tree/main/examples/rich-text-tiptap?file=/src/App.tsx) (CodeSandbox)
+
+### gif demo:
+
+![screenshot](richtext.gif)

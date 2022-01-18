@@ -15,6 +15,14 @@ In the [examples](examples) directory, you'll find some live examples:
 - [Collaborative Todo list](examples/todo-simple-react)
 - [Collaborative rich text editing](examples/rich-text-tiptap)
 
+## TL;DR
+
+Create apps like this:
+
+![screencapture](examples/rich-text-tiptap/richtext.gif)
+
+And connect [Matrix](https://matrix.org/) as transport + backend storage. Instead of chat messages (primary use-case of Matrix), we send an event stream of data model updates (for the rich-text demo, these are _document edits_) to Matrix.
+
 ## Motivation
 
 [CRDTs](https://crdt.tech/) (_Conflict-free Replicated Data Types_) make it easy to build **decentralized**, **fast**, **collaborative** **local-first** applications.
