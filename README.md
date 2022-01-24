@@ -65,6 +65,13 @@ const matrixClient = sdk.createClient({
   userId: "@USERID:matrix.org",
 });
 
+// Extra configuration needed for certain matrix-js-sdk
+// calls to work without calling sync start functions
+matrixClient.canSupportVoip = false;
+matrixClient.clientOpts = {
+  lazyLoadMembers: true,
+};
+
 // Create a new Y.Doc and connect the MatrixProvider
 const ydoc = new Y.Doc();
 const provider = new MatrixProvider(ydoc, matrixClient, {
