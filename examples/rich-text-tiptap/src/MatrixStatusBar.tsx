@@ -8,7 +8,13 @@ import * as Y from "yjs";
 /**
  * The Top Bar of the app that contains the sign in button and status of the MatrixProvider (connection to the Matrix Room)
  */
-export default function MatrixStatusBar({ doc }: { doc: Y.Doc }) {
+export default function MatrixStatusBar({
+  doc,
+  awareness,
+}: {
+  doc: Y.Doc;
+  awareness: any;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [matrixProvider, setMatrixProvider] = useState<MatrixProvider>();
   const [status, setStatus] = useState<
@@ -31,11 +37,12 @@ export default function MatrixStatusBar({ doc }: { doc: Y.Doc }) {
         doc,
         matrixClient,
         { type: "alias", alias: roomAlias },
-        undefined,
+        awareness,
         {
           translator: { updatesAsRegularMessages: true },
           reader: { snapshotInterval: 10 },
           writer: { flushInterval: 500 },
+          enableExperimentalWebrtcSync: true,
         }
       );
       setStatus("loading");

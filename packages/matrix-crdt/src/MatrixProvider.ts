@@ -283,15 +283,15 @@ export class MatrixProvider extends lifecycle.Disposable {
       this.roomId,
       this.roomId,
       async (obj) => {
-        await signObject(this.matrixClient, obj);
+        // await signObject(this.matrixClient, obj);
       },
       async (obj) => {
-        await verifyObject(
-          this.matrixClient,
-          memberReader,
-          obj,
-          this.translator.WrappedEventType
-        );
+        // await verifyObject(
+        //   this.matrixClient,
+        //   memberReader,
+        //   obj,
+        //   this.translator.WrappedEventType
+        // );
       },
       undefined,
       this.awareness
