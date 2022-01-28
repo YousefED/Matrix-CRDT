@@ -1,5 +1,5 @@
 import { MatrixClient } from "matrix-js-sdk";
-import { event, lifecycle } from "vscode-lib";
+import { lifecycle } from "vscode-lib";
 import { MatrixReader } from "../reader/MatrixReader";
 
 type Member = {
@@ -22,7 +22,7 @@ export class MatrixMemberReader extends lifecycle.Disposable {
   private initialized = false;
   private initializing = false;
   private initializeOutdated = false;
-  private members: Map<string, Member> = new Map();
+  public readonly members: Map<string, Member> = new Map();
   private powerLevels:
     | {
         events: { [event_type: string]: number };
@@ -86,14 +86,17 @@ export class MatrixMemberReader extends lifecycle.Disposable {
       return;
     }
     if (event.type === "m.room.member") {
-      if (event.content.membership === "join") {
+      if (
+        event.content.membership === "join" ||
+        event.content.membership === "invite"
+      ) {
         const member: Member = {
           displayname: event.content.displayname,
-          user_id: event.user_id,
+          user_id: event.state_key,
         };
-        this.members.set(event.user_id, member);
+        this.members.set(event.state_key, member);
       } else {
-        this.members.delete(event.user_id);
+        this.members.delete(event.state_key);
       }
       return;
     }
@@ -118,7 +121,11 @@ export class MatrixMemberReader extends lifecycle.Disposable {
         this.reader.roomId,
         "m.room.power_levels"
       ),
-      this.matrixClient.members(this.reader.roomId, ["join"]),
+      this.matrixClient.members(
+        this.reader.roomId,
+        [],
+        ["knock", "leave", "ban"]
+      ),
     ]);
     if (this.initializeOutdated) {
       // A power_levels or member event has been received in the mean time.
@@ -133,12 +140,13 @@ export class MatrixMemberReader extends lifecycle.Disposable {
     members.chunk
       .filter(
         (e: any) =>
-          e.type === "m.room.member" && e.content.membership === "join"
+          e.type === "m.room.member" &&
+          (e.content.membership === "join" || e.content.membership === "invite")
       )
       .forEach((e: any) => {
-        this.members.set(e.user_id, {
+        this.members.set(e.state_key, {
           displayname: e.content.displayname as string,
-          user_id: e.user_id as string,
+          user_id: e.state_key as string,
         });
       });
 
