@@ -60,7 +60,7 @@ export type MatrixProviderOptions = Partial<typeof DEFAULT_OPTIONS>;
  */
 export class MatrixProvider extends lifecycle.Disposable {
   private disposed = false;
-  private roomId: string | undefined;
+  private _roomId: string | undefined;
   private initializeTimeoutHandler: any;
 
   private initializedResolve: any;
@@ -104,6 +104,14 @@ export class MatrixProvider extends lifecycle.Disposable {
 
   public get canWrite() {
     return this.throttledWriter.canWrite;
+  }
+
+  public get roomId() {
+    return this._roomId;
+  }
+
+  public get matrixReader() {
+    return this.reader;
   }
 
   public totalEventsReceived = 0;
@@ -228,7 +236,7 @@ export class MatrixProvider extends lifecycle.Disposable {
       this.translator
         .sendSnapshot(
           this.matrixClient,
-          this.roomId!,
+          this._roomId!,
           update,
           lastEvent.event_id
         )
@@ -258,7 +266,7 @@ export class MatrixProvider extends lifecycle.Disposable {
    * API consumers can instantiate / configure this seperately
    */
   private async initializeWebrtc() {
-    if (!this.roomId) {
+    if (!this._roomId) {
       throw new Error("not initialized");
     }
     /*
@@ -280,8 +288,8 @@ export class MatrixProvider extends lifecycle.Disposable {
     // - We should validate whether the use of Matrix keys and signatures here is considered secure
     this.webrtcProvider = new SignedWebrtcProvider(
       this.doc,
-      this.roomId,
-      this.roomId,
+      this._roomId,
+      this._roomId,
       async (obj) => {
         await signObject(this.matrixClient, obj);
       },
@@ -303,17 +311,17 @@ export class MatrixProvider extends lifecycle.Disposable {
       this.room.type === "id" ? this.room.id : this.room.alias;
     try {
       if (this.room.type === "id") {
-        this.roomId = this.room.id;
+        this._roomId = this.room.id;
       } else if (this.room.type === "alias") {
         const ret = await this.matrixClient.getRoomIdForAlias(this.room.alias);
-        this.roomId = ret.room_id;
+        this._roomId = ret.room_id;
       }
 
-      if (!this.roomId) {
+      if (!this._roomId) {
         throw new Error("error receiving room id");
       }
-      console.log("room resolved", this.roomId);
-      await this.throttledWriter.initialize(this.roomId);
+      console.log("room resolved", this._roomId);
+      await this.throttledWriter.initialize(this._roomId);
     } catch (e: any) {
       let timeout = 5 * 1000;
       if (e.errcode === "M_NOT_FOUND") {
@@ -391,14 +399,14 @@ export class MatrixProvider extends lifecycle.Disposable {
     if (this.reader) {
       throw new Error("already initialized reader");
     }
-    if (!this.roomId) {
+    if (!this._roomId) {
       throw new Error("no roomId");
     }
 
     this.reader = this._register(
       new MatrixReader(
         this.matrixClient,
-        this.roomId,
+        this._roomId,
         this.translator,
         this.opts.reader
       )

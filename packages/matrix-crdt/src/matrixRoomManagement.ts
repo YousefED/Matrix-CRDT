@@ -73,3 +73,56 @@ export async function createMatrixRoom(
     // offline error?
   }
 }
+
+export async function getMatrixRoomAccess(matrixClient: any, roomId: string) {
+  let result: any;
+
+  try {
+    result = await matrixClient.getStateEvent(roomId, "m.room.join_rules");
+  } catch (e) {
+    return {
+      status: "error" as "error",
+      error: e,
+    };
+  }
+
+  if (result.join_rule === "public") {
+    return "public-read-write";
+  } else if (result.join_rule === "invite") {
+    return "public-read";
+  } else {
+    throw new Error("unsupported join_rule");
+  }
+}
+
+/**
+ * Helper function to change access of a Matrix Room
+ * Access can currently be set to "public-read-write" | "public-read"
+ */
+export async function updateMatrixRoomAccess(
+  matrixClient: any,
+  roomId: string,
+  access: "public-read-write" | "public-read"
+) {
+  try {
+    await matrixClient.sendStateEvent(
+      roomId,
+      "m.room.join_rules",
+      { join_rule: access === "public-read-write" ? "public" : "invite" },
+      ""
+    );
+
+    // TODO: add room to space
+
+    return { status: "ok" as "ok", roomId };
+  } catch (e: any) {
+    if (e.name === "ConnectionError") {
+      return "offline";
+    }
+
+    return {
+      status: "error" as "error",
+      error: e,
+    };
+  }
+}

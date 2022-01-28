@@ -1,6 +1,6 @@
 import { createClient, MemoryStore } from "matrix-js-sdk";
 import { uuid } from "vscode-lib";
-import { createMatrixRoom } from "../createMatrixRoom";
+import { createMatrixRoom } from "../matrixRoomManagement";
 import * as http from "http";
 import * as https from "https";
 import { matrixTestConfig } from "./matrixTestUtilServer";
