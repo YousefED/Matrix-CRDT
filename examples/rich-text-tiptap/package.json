@@ -25,6 +25,7 @@
     "react-dom": "^17.0.2",
     "styled-components": "^5.3.3",
     "typescript": "^4.4.4",
+    "url": "^0.11.0",
     "y-protocols": "^1.0.5",
     "yjs": "^13.5.16"
   },
