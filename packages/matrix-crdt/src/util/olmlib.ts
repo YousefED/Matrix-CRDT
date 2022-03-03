@@ -24,8 +24,7 @@ limitations under the License.
 
 //  import {logger} from '../logger';
 //  import * as utils from "../utils";
-// import anotherjson from "another-json";
-const anotherjson = require("another-json");
+import * as anotherjson from "another-json";
 //  /**
 //   * matrix algorithm tag for olm
 //   */
