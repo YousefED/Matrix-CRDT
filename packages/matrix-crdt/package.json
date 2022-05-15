@@ -5,7 +5,7 @@
   "author": {
     "name": "Yousef El-Dardiry"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": false,
   "license": "MPL-2.0",
   "dependencies": {
@@ -45,12 +45,19 @@
   ],
   "source": "src/index.ts",
   "types": "types/index.d.ts",
-  "main": "dist/index.js",
+  "main": "./dist/cjs/index.js",
+  "exports": {
+    "require": "./dist/cjs/index.js",
+    "import": "./dist/esm/index.js"
+  },
   "scripts": {
     "clean": "rimraf dist && rimraf types",
     "build": "npm run clean && tsc -p tsconfig.json",
     "test": "jest --coverage=true --config=jest.config.js",
     "watch": "tsc --watch",
     "bench": "NODE_OPTIONS='--max-old-space-size=4096' ts-node --files -O '{\"module\":\"commonjs\"}' src/matrix-crdt/benchmark/benchmarkTest.ts "
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
