@@ -11,7 +11,8 @@ node_modules
 # production
 /build
 
-packages/*/dist
+# we actually do want to ship the dist/esm folder in the repo so that we can ship our static esm wrapper
+packages/matrix-crdt/dist/cjs
 packages/*/types
 
 # misc
