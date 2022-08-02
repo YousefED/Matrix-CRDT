@@ -47,7 +47,8 @@
   "source": "src/index.ts",
   "types": "types/index.d.ts",
   "main": "dist/matrix-crdt.js",
-  "module": "dist/matrix-crdt.module.js",
+  "module": "dist/matrix-crdt.modern.mjs",
+  "exports": "./dist/matrix-crdt.modern.mjs",
   "umd:main": "dist/matrix-crdt.umd.js",
   "scripts": {
     "clean": "rimraf dist && rimraf types",
