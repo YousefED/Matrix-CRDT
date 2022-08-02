@@ -227,7 +227,7 @@ export class MatrixReader extends lifecycle.Disposable {
       if (!this.latestToken) {
         this.latestToken = res.start;
       }
-      hasNextPage = res.start !== res.end;
+      hasNextPage = res.start !== res.end && res.end;
     }
     return ret.reverse();
   }
