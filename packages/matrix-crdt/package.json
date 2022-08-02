@@ -5,7 +5,7 @@
   "author": {
     "name": "Yousef El-Dardiry"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": false,
   "license": "MPL-2.0",
   "dependencies": {
