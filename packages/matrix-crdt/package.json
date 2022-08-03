@@ -6,7 +6,7 @@
     "name": "Yousef El-Dardiry"
   },
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "license": "MPL-2.0",
   "dependencies": {
