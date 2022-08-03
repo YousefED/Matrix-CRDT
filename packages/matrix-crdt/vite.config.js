@@ -18,6 +18,7 @@ export default defineConfig({
         "y-protocols",
         "lodash",
         "simple-peer",
+        "another-json",
       ],
     },
   },
