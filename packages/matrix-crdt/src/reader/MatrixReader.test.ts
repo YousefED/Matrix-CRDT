@@ -1,13 +1,18 @@
 import got from "got";
 import { MatrixClient, request } from "matrix-js-sdk";
 import * as qs from "qs";
+import { beforeAll, expect, it } from "vitest";
 import { autocannonSeparateProcess } from "../benchmark/util";
+import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
 import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
 import { createRandomMatrixClientAndRoom } from "../test-utils/matrixTestUtil";
-import { ensureMatrixIsRunning, HOMESERVER_NAME, matrixTestConfig } from "../test-utils/matrixTestUtilServer";
-import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
-import { MatrixReader } from "./MatrixReader";
+import {
+  ensureMatrixIsRunning,
+  HOMESERVER_NAME,
+  matrixTestConfig,
+} from "../test-utils/matrixTestUtilServer";
 import { sendMessage } from "../util/matrixUtil";
+import { MatrixReader } from "./MatrixReader";
 
 const { Worker, isMainThread } = require("worker_threads");
 
@@ -34,8 +39,6 @@ request((opts: any, cb: any) => {
   return ret;
 });
 
-jest.setTimeout(100000);
-
 beforeAll(async () => {
   await ensureMatrixIsRunning();
 });
@@ -57,9 +60,15 @@ it("handles initial and live messages", async () => {
   }
 
   const guestClient = await createMatrixGuestClient(matrixTestConfig);
-  const reader = new MatrixReader(guestClient, setup.roomId, new MatrixCRDTEventTranslator());
+  const reader = new MatrixReader(
+    guestClient,
+    setup.roomId,
+    new MatrixCRDTEventTranslator()
+  );
   try {
-    const messages = await reader.getInitialDocumentUpdateEvents("m.room.message");
+    const messages = await reader.getInitialDocumentUpdateEvents(
+      "m.room.message"
+    );
 
     reader.onEvents((msgs) => {
       messages.push.apply(
@@ -78,18 +87,27 @@ it("handles initial and live messages", async () => {
   } finally {
     reader.dispose();
   }
-});
+}, 100000);
 
 class TestReader {
   private static CREATED = 0;
 
   public messages: any[] | undefined;
   private reader: MatrixReader | undefined;
-  constructor(private config: any, private roomId: string, private client?: MatrixClient) {}
+  constructor(
+    private config: any,
+    private roomId: string,
+    private client?: MatrixClient
+  ) {}
 
   async initialize() {
-    const guestClient = this.client || (await createMatrixGuestClient(matrixTestConfig));
-    this.reader = new MatrixReader(guestClient, this.roomId, new MatrixCRDTEventTranslator());
+    const guestClient =
+      this.client || (await createMatrixGuestClient(matrixTestConfig));
+    this.reader = new MatrixReader(
+      guestClient,
+      this.roomId,
+      new MatrixCRDTEventTranslator()
+    );
 
     this.messages = await this.reader.getInitialDocumentUpdateEvents();
     console.log("created", TestReader.CREATED++);
@@ -146,7 +164,11 @@ it.skip("handles parallel live messages autocannon", async () => {
   const setup = await createRandomMatrixClientAndRoom("public-read");
 
   const client = await createMatrixGuestClient(matrixTestConfig);
-  const reader = new MatrixReader(client, setup.roomId, new MatrixCRDTEventTranslator());
+  const reader = new MatrixReader(
+    client,
+    setup.roomId,
+    new MatrixCRDTEventTranslator()
+  );
   try {
     await reader.getInitialDocumentUpdateEvents();
 
@@ -163,8 +185,20 @@ it.skip("handles parallel live messages autocannon", async () => {
       await sendMessage(setup.client, setup.roomId, "message " + ++messageId);
     }
 
-    const uri = "http://" + HOMESERVER_NAME + "/_matrix/client/r0/events?" + qs.stringify(params);
-    autocannonSeparateProcess(["-c", PARALLEL + "", "-a", PARALLEL + "", "-t", "20", uri]);
+    const uri =
+      "http://" +
+      HOMESERVER_NAME +
+      "/_matrix/client/r0/events?" +
+      qs.stringify(params);
+    autocannonSeparateProcess([
+      "-c",
+      PARALLEL + "",
+      "-a",
+      PARALLEL + "",
+      "-t",
+      "20",
+      uri,
+    ]);
 
     // send some new messages in parallel / after
     while (messageId < 20) {

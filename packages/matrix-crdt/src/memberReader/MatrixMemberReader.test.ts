@@ -1,8 +1,8 @@
 import { MatrixEvent } from "matrix-js-sdk";
-
-import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
-import { MatrixMemberReader } from "./MatrixMemberReader";
+import { beforeAll, expect, it } from "vitest";
+import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
 import { MatrixReader } from "../reader/MatrixReader";
+import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
 import {
   createRandomMatrixClient,
   createRandomMatrixClientAndRoom,
@@ -11,9 +11,7 @@ import {
   ensureMatrixIsRunning,
   matrixTestConfig,
 } from "../test-utils/matrixTestUtilServer";
-import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
-
-jest.setTimeout(30000);
+import { MatrixMemberReader } from "./MatrixMemberReader";
 
 beforeAll(async () => {
   await ensureMatrixIsRunning();
@@ -44,7 +42,7 @@ it("handles room joins", async () => {
   expect(memberC.hasWriteAccess(userB.client.credentials.userId)).toBe(true);
 
   readerC.dispose();
-});
+}, 30000);
 
 it("handles room power levels", async () => {
   const setupA = await createRandomMatrixClientAndRoom("public-read-write");
@@ -95,4 +93,4 @@ it("handles room power levels", async () => {
   expect(memberC.hasWriteAccess(userB.client.credentials.userId)).toBe(true);
 
   readerC.dispose();
-});
+}, 30000);

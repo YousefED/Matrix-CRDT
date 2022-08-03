@@ -1,7 +1,8 @@
-import * as Y from "yjs";
+import { beforeAll, expect, it } from "vitest";
 import { event } from "vscode-lib";
-import { createMatrixGuestClient } from "./test-utils/matrixGuestClient";
+import * as Y from "yjs";
 import { MatrixProvider } from "./MatrixProvider";
+import { createMatrixGuestClient } from "./test-utils/matrixGuestClient";
 import {
   createRandomMatrixClient,
   createRandomMatrixClientAndRoom,
@@ -11,8 +12,6 @@ import {
   HOMESERVER_NAME,
   matrixTestConfig,
 } from "./test-utils/matrixTestUtilServer";
-
-jest.setTimeout(30000);
 
 beforeAll(async () => {
   await ensureMatrixIsRunning();
@@ -134,7 +133,7 @@ it("syncs public room guest", async () => {
     roomAccess: "public-read-write",
   });
   await validateOneWaySync(users);
-});
+}, 30000);
 
 it("syncs write-only access", async () => {
   const users = await getRoomAndTwoUsers({
@@ -142,7 +141,7 @@ it("syncs write-only access", async () => {
     roomAccess: "public-read",
   });
   await validateOneWaySync(users);
-});
+}, 30000);
 
 it("syncs two users writing ", async () => {
   const users = await getRoomAndTwoUsers({
@@ -150,7 +149,7 @@ it("syncs two users writing ", async () => {
     roomAccess: "public-read-write",
   });
   await validateTwoWaySync(users);
-});
+}, 30000);
 
 it("syncs with intermediate snapshots ", async () => {
   const users = await getRoomAndTwoUsers({
@@ -178,4 +177,4 @@ it("syncs with intermediate snapshots ", async () => {
 
   alice.provider.dispose();
   bob.provider.dispose();
-});
+}, 30000);
