@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   preset: "ts-jest",
   // transform: {
   //   "^.+\\.(ts|tsx)?$": "ts-jest",
@@ -11,7 +11,8 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
   moduleNameMapper: {
     "^lib0/([a-zA-Z-]*)$": "<rootDir>/../../node_modules/lib0/dist/$1.cjs",
-    "^y-protocols/([a-zA-Z-]*)$": "<rootDir>/../../node_modules/y-protocols/dist/$1.cjs",
+    "^y-protocols/([a-zA-Z-]*)$":
+      "<rootDir>/../../node_modules/y-protocols/dist/$1.cjs",
   },
   setupFiles: ["<rootDir>/src/setupTests.ts"],
 };
