@@ -39,7 +39,7 @@ export class MatrixCRDTEventTranslator {
         msgtype: this.opts.updateEventType,
         ...content,
       };
-      client.scheduler = undefined;
+      (client as any).scheduler = undefined;
       await client.sendEvent(roomId, MESSAGE_EVENT_TYPE, wrappedContent, "");
     } else {
       await client.sendEvent(roomId, this.opts.updateEventType, content, "");
@@ -63,7 +63,7 @@ export class MatrixCRDTEventTranslator {
         msgtype: this.opts.snapshotEventType,
         ...content,
       };
-      client.scheduler = undefined;
+      (client as any).scheduler = undefined;
       await client.sendEvent(roomId, MESSAGE_EVENT_TYPE, wrappedContent, "");
     } else {
       await client.sendEvent(roomId, this.opts.snapshotEventType, content, "");
