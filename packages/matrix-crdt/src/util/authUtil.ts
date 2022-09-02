@@ -39,7 +39,7 @@ export async function verifyObject(
   const deviceToGet = keyToGet.substr("ed25519:".length);
 
   client.crypto.deviceList.startTrackingDeviceList(userId);
-  const keys = await client.crypto.deviceList.downloadKeys([userId]);
+  const keys = await client.crypto.deviceList.downloadKeys([userId], false);
   const deviceKey = keys[userId][deviceToGet].keys[keyToGet];
   if (!deviceKey) {
     throw new Error("key not found");

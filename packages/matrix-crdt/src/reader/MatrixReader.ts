@@ -1,4 +1,10 @@
-import { MatrixClient, MatrixEvent } from "matrix-js-sdk";
+import {
+  Direction,
+  MatrixClient,
+  MatrixEvent,
+  Method,
+  RoomEvent,
+} from "matrix-js-sdk";
 import { event, lifecycle } from "vscode-lib";
 import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
 
@@ -42,7 +48,7 @@ export class MatrixReader extends lifecycle.Disposable {
     super();
     this.opts = { ...DEFAULT_OPTIONS, ...opts };
     // TODO: catch events for when room has been deleted or user has been kicked
-    this.matrixClient.on("Room.timeline", this.matrixRoomListener);
+    this.matrixClient.on(RoomEvent.Timeline, this.matrixRoomListener);
   }
 
   /**
@@ -138,16 +144,16 @@ export class MatrixReader extends lifecycle.Disposable {
     }
     try {
       this.pendingPollRequest = this.matrixClient.http.authedRequest(
-        undefined,
-        "GET",
+        undefined as any,
+        Method.Get,
         "/events",
         {
           room_id: this.roomId,
-          timeout: PEEK_POLL_TIMEOUT,
+          timeout: PEEK_POLL_TIMEOUT + "",
           from: this.latestToken,
         },
         undefined,
-        PEEK_POLL_TIMEOUT * 2
+        { localTimeoutMs: PEEK_POLL_TIMEOUT * 2 }
       );
       const results = await this.pendingPollRequest;
       this.pendingPollRequest = undefined;
@@ -197,7 +203,7 @@ export class MatrixReader extends lifecycle.Disposable {
         this.roomId,
         token,
         30,
-        "b"
+        Direction.Backward
         // TODO: filter?
       );
 
@@ -227,7 +233,7 @@ export class MatrixReader extends lifecycle.Disposable {
       if (!this.latestToken) {
         this.latestToken = res.start;
       }
-      hasNextPage = res.start !== res.end && res.end;
+      hasNextPage = !!(res.start !== res.end && res.end);
     }
     return ret.reverse();
   }
@@ -256,6 +262,6 @@ export class MatrixReader extends lifecycle.Disposable {
     if (this.pendingPollRequest) {
       this.pendingPollRequest.abort();
     }
-    this.matrixClient.off("Room.timeline", this.matrixRoomListener);
+    this.matrixClient.off(RoomEvent.Timeline, this.matrixRoomListener);
   }
 }

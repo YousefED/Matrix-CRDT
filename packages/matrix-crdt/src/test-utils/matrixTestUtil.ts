@@ -1,9 +1,16 @@
-import { createClient, MemoryStore } from "matrix-js-sdk";
-import { uuid } from "vscode-lib";
-import { createMatrixRoom } from "../matrixRoomManagement";
 import * as http from "http";
 import * as https from "https";
+import Matrix, { createClient, MemoryStore } from "matrix-js-sdk";
+import { uuid } from "vscode-lib";
+import { createMatrixRoom } from "../matrixRoomManagement";
 import { matrixTestConfig } from "./matrixTestUtilServer";
+
+const request = require("request");
+
+export function initMatrixSDK() {
+  // make sure the matrix sdk initializes request properly
+  Matrix.request(request);
+}
 
 http.globalAgent.maxSockets = 2000;
 https.globalAgent.maxSockets = 2000;
@@ -48,17 +55,25 @@ export async function createMatrixUser(username: string, password: string) {
     // userId: user_id,
     // deviceId: device_id,
   });
-
-  let sessionId: string | undefined;
+  let request = Matrix.getRequest();
+  let sessionId = "";
   // first get a session_id. this is returned in a 401 response :/
   try {
-    const result = await matrixClient.register(username, password);
+    const result = await matrixClient.register(
+      username,
+      password,
+      null,
+      undefined as any
+    );
     // console.log(result);
   } catch (e: any) {
     // console.log(e);
     sessionId = e.data.session;
   }
 
+  if (!sessionId) {
+    throw new Error("unexpected, no sessionId set");
+  }
   // now register
 
   const result = await matrixClient.register(username, password, sessionId, {
@@ -73,14 +88,14 @@ export async function createMatrixUser(username: string, password: string) {
   let matrixClientLoggedIn = createClient({
     baseUrl: matrixTestConfig.baseUrl,
     accessToken: loginResult.access_token,
-    sessionStore: new MemoryStore(),
+    store: new MemoryStore() as any,
     userId: loginResult.user_id,
     deviceId: loginResult.device_id,
   });
 
   matrixClientLoggedIn.initCrypto();
-  matrixClientLoggedIn.canSupportVoip = false;
-  matrixClientLoggedIn.clientOpts = {
+  (matrixClientLoggedIn as any).canSupportVoip = false;
+  (matrixClientLoggedIn as any).clientOpts = {
     lazyLoadMembers: true,
   };
   return matrixClientLoggedIn;

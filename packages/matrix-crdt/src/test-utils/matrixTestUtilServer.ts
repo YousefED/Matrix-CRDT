@@ -47,7 +47,7 @@ export async function ensureMatrixIsRunning() {
     matrixStarted = true;
     console.log("Starting matrix using docker-compose");
     const ret = cp.execSync("docker compose up -d", {
-      cwd: "./test-server/",
+      cwd: "../../test-server/",
     });
     console.log(ret.toString("utf-8"));
   }
