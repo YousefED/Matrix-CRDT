@@ -2,18 +2,20 @@ import { createClient, MemoryStore } from "matrix-js-sdk";
 
 export async function createMatrixGuestClient(config: { baseUrl: string }) {
   const tmpClient = await createClient(config);
-  const { user_id, device_id, access_token } = await tmpClient.registerGuest();
+  const { user_id, device_id, access_token } = await tmpClient.registerGuest(
+    {}
+  );
   let matrixClient = createClient({
     baseUrl: config.baseUrl,
     accessToken: access_token,
     userId: user_id,
     deviceId: device_id,
-    sessionStore: new MemoryStore(),
+    store: new MemoryStore() as any,
   });
 
   // hardcoded overwrites
-  matrixClient.canSupportVoip = false;
-  matrixClient.clientOpts = {
+  (matrixClient as any).canSupportVoip = false;
+  (matrixClient as any).clientOpts = {
     lazyLoadMembers: true,
   };
 

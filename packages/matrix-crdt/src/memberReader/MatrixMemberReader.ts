@@ -119,12 +119,13 @@ export class MatrixMemberReader extends lifecycle.Disposable {
     const [powerLevels, members] = await Promise.all([
       this.matrixClient.getStateEvent(
         this.reader.roomId,
-        "m.room.power_levels"
+        "m.room.power_levels",
+        undefined as any
       ),
       this.matrixClient.members(
         this.reader.roomId,
-        [],
-        ["knock", "leave", "ban"]
+        undefined,
+        ["knock", "leave", "ban"] as any // any because of https://github.com/matrix-org/matrix-js-sdk/pull/2319
       ),
     ]);
     if (this.initializeOutdated) {
@@ -136,7 +137,7 @@ export class MatrixMemberReader extends lifecycle.Disposable {
       return this.initialize();
     }
 
-    this.powerLevels = powerLevels;
+    this.powerLevels = powerLevels as any;
     members.chunk
       .filter(
         (e: any) =>

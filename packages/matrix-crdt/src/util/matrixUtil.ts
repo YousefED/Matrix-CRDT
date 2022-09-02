@@ -12,6 +12,6 @@ export async function sendMessage(
     body: message,
     msgtype: "m.text",
   };
-  client.scheduler = undefined;
+  (client as any).scheduler = undefined;
   await client.sendEvent(roomId, eventType, content, "");
 }
