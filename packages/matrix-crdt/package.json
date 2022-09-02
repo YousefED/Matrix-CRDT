@@ -6,14 +6,14 @@
     "name": "Yousef El-Dardiry"
   },
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": false,
   "license": "MPL-2.0",
   "dependencies": {
+    "another-json": "^0.2.0",
     "lodash": "^4.17.21",
     "simple-peer": "^9.11.0",
-    "vscode-lib": "^0.1.0",
-    "another-json": "^0.2.0"
+    "vscode-lib": "^0.1.0"
   },
   "devDependencies": {
     "@matrix-org/olm": "^3.2.12",
