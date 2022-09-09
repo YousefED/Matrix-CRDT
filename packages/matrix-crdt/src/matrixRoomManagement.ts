@@ -5,7 +5,8 @@
 export async function createMatrixRoom(
   matrixClient: any,
   roomName: string,
-  access: "public-read-write" | "public-read"
+  access: "public-read-write" | "public-read",
+  encrypted: boolean = false
 ) {
   try {
     const initial_state = [];
@@ -39,13 +40,15 @@ export async function createMatrixRoom(
     });
 
     // for e2ee
-    // initial_state.push({
-    //   type: "m.room.encryption",
-    //   state_key: "",
-    //   content: {
-    //     algorithm: "m.megolm.v1.aes-sha2",
-    //   },
-    // });
+    if (encrypted) {
+      initial_state.push({
+        type: "m.room.encryption",
+        state_key: "",
+        content: {
+          algorithm: "m.megolm.v1.aes-sha2",
+        },
+      });
+    }
 
     const ret = await matrixClient.createRoom({
       room_alias_name: roomName,

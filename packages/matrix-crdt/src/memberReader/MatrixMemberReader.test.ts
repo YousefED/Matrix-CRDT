@@ -20,7 +20,10 @@ beforeAll(async () => {
 });
 
 it("handles room joins", async () => {
-  const setupA = await createRandomMatrixClientAndRoom("public-read-write");
+  const setupA = await createRandomMatrixClientAndRoom(
+    "public-read-write",
+    false
+  );
   const userB = await createRandomMatrixClient();
   const guestClient = await createMatrixGuestClient(matrixTestConfig);
 
@@ -47,7 +50,10 @@ it("handles room joins", async () => {
 }, 30000);
 
 it("handles room power levels", async () => {
-  const setupA = await createRandomMatrixClientAndRoom("public-read-write");
+  const setupA = await createRandomMatrixClientAndRoom(
+    "public-read-write",
+    false
+  );
   const userB = await createRandomMatrixClient();
   const guestClient = await createMatrixGuestClient(matrixTestConfig);
 

@@ -30,11 +30,12 @@ export async function createRandomMatrixClient() {
 }
 
 export async function createRandomMatrixClientAndRoom(
-  access: "public-read-write" | "public-read"
+  access: "public-read-write" | "public-read",
+  encrypted: boolean
 ) {
   const { client, username } = await createRandomMatrixClient();
   const roomName = "@" + username + "/test";
-  const result = await createMatrixRoom(client, roomName, access);
+  const result = await createMatrixRoom(client, roomName, access, encrypted);
 
   if (typeof result === "string" || result.status !== "ok") {
     throw new Error("couldn't create room");
@@ -93,10 +94,13 @@ export async function createMatrixUser(username: string, password: string) {
     deviceId: loginResult.device_id,
   });
 
-  matrixClientLoggedIn.initCrypto();
+  await matrixClientLoggedIn.initCrypto();
+  matrixClientLoggedIn.setCryptoTrustCrossSignedDevices(true);
+  matrixClientLoggedIn.setGlobalErrorOnUnknownDevices(false);
   (matrixClientLoggedIn as any).canSupportVoip = false;
-  (matrixClientLoggedIn as any).clientOpts = {
+
+  await matrixClientLoggedIn.startClient({
     lazyLoadMembers: true,
-  };
+  });
   return matrixClientLoggedIn;
 }

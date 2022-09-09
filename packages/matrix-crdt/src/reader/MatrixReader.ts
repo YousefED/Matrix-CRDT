@@ -75,9 +75,9 @@ export class MatrixReader extends lifecycle.Disposable {
     console.error("not expected; Room.timeline on MatrixClient");
     // (disable error when testing / developing e2ee support,
     // in that case startClient is necessary)
-    throw new Error(
-      "unexpected, we don't use /sync calls for MatrixReader, startClient should not be used on the Matrix client"
-    );
+    // throw new Error(
+    //   "unexpected, we don't use /sync calls for MatrixReader, startClient should not be used on the Matrix client"
+    // );
   };
 
   /**

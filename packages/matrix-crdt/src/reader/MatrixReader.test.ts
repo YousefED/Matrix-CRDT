@@ -5,7 +5,10 @@ import { beforeAll, expect, it } from "vitest";
 import { autocannonSeparateProcess } from "../benchmark/util";
 import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
 import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
-import { createRandomMatrixClientAndRoom } from "../test-utils/matrixTestUtil";
+import {
+  createRandomMatrixClient,
+  createRandomMatrixClientAndRoom,
+} from "../test-utils/matrixTestUtil";
 import {
   ensureMatrixIsRunning,
   HOMESERVER_NAME,
@@ -52,16 +55,22 @@ function validateMessages(messages: any[], count: number) {
 
 it("handles initial and live messages", async () => {
   let messageId = 0;
-  const setup = await createRandomMatrixClientAndRoom("public-read");
+  const setup = await createRandomMatrixClientAndRoom(
+    "public-read-write",
+    true
+  );
+
+  const { client, username } = await createRandomMatrixClient();
+  // const guestClient = await createMatrixGuestClient(matrixTestConfig);
+  await client.joinRoom(setup.roomId);
 
   // send more than 1 page (30 messages) initially
   for (let i = 0; i < 40; i++) {
     await sendMessage(setup.client, setup.roomId, "message " + ++messageId);
   }
 
-  const guestClient = await createMatrixGuestClient(matrixTestConfig);
   const reader = new MatrixReader(
-    guestClient,
+    client,
     setup.roomId,
     new MatrixCRDTEventTranslator()
   );
@@ -81,7 +90,6 @@ it("handles initial and live messages", async () => {
     while (messageId < 60) {
       await sendMessage(setup.client, setup.roomId, "message " + ++messageId);
     }
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
     validateMessages(messages, messageId);
   } finally {
@@ -127,7 +135,7 @@ class TestReader {
 it.skip("handles parallel live messages", async () => {
   const PARALLEL = 500;
   let messageId = 0;
-  const setup = await createRandomMatrixClientAndRoom("public-read");
+  const setup = await createRandomMatrixClientAndRoom("public-read", false);
 
   const readers = [];
   try {
@@ -161,7 +169,7 @@ it.skip("handles parallel live messages autocannon", async () => {
   const PARALLEL = 500;
 
   let messageId = 0;
-  const setup = await createRandomMatrixClientAndRoom("public-read");
+  const setup = await createRandomMatrixClientAndRoom("public-read", false);
 
   const client = await createMatrixGuestClient(matrixTestConfig);
   const reader = new MatrixReader(

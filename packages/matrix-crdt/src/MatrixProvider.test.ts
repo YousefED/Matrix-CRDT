@@ -24,8 +24,12 @@ type UnPromisify<T> = T extends Promise<infer U> ? U : T;
 async function getRoomAndTwoUsers(opts: {
   bobIsGuest: boolean;
   roomAccess: "public-read-write" | "public-read";
+  encrypted: boolean;
 }) {
-  const setup = await createRandomMatrixClientAndRoom(opts.roomAccess);
+  const setup = await createRandomMatrixClientAndRoom(
+    opts.roomAccess,
+    opts.encrypted
+  );
   const doc = new Y.Doc();
   const provider = new MatrixProvider(doc, setup.client, {
     type: "alias",
@@ -133,6 +137,7 @@ it("syncs public room guest", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: true,
     roomAccess: "public-read-write",
+    encrypted: false,
   });
   await validateOneWaySync(users);
 }, 30000);
@@ -141,6 +146,7 @@ it("syncs write-only access", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: false,
     roomAccess: "public-read",
+    encrypted: false,
   });
   await validateOneWaySync(users);
 }, 30000);
@@ -149,6 +155,7 @@ it("syncs two users writing ", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: false,
     roomAccess: "public-read-write",
+    encrypted: false,
   });
   await validateTwoWaySync(users);
 }, 30000);
@@ -157,6 +164,7 @@ it("syncs with intermediate snapshots ", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: false,
     roomAccess: "public-read-write",
+    encrypted: false,
   });
 
   const { alice, bob } = users;
