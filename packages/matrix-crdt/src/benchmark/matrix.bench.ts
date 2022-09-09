@@ -1,10 +1,10 @@
 import * as http from "http";
 import * as https from "https";
 import { MatrixClient } from "matrix-js-sdk";
-import * as Y from "yjs";
 import { event } from "vscode-lib";
-import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
+import * as Y from "yjs";
 import { MatrixProvider } from "../MatrixProvider";
+import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
 import { createRandomMatrixClientAndRoom } from "../test-utils/matrixTestUtil";
 import {
   HOMESERVER_NAME,
@@ -45,7 +45,10 @@ async function readRoom(roomName: string) {
 }
 
 async function loadTest() {
-  const setup = await createRandomMatrixClientAndRoom("public-read-write");
+  const setup = await createRandomMatrixClientAndRoom(
+    "public-read-write",
+    false
+  );
 
   await setRoomContents(setup.client, setup.roomId);
   const server = await createSimpleServer(() => readRoom(setup.roomName));
