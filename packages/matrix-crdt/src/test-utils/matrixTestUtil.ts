@@ -2,7 +2,7 @@ import * as http from "http";
 import * as https from "https";
 import Matrix, { createClient, MemoryStore } from "matrix-js-sdk";
 import { uuid } from "vscode-lib";
-import { createMatrixRoom } from "../matrixRoomManagement";
+import { createMatrixRoom, RoomSecuritySetting } from "../matrixRoomManagement";
 import { matrixTestConfig } from "./matrixTestUtilServer";
 
 const request = require("request");
@@ -30,12 +30,11 @@ export async function createRandomMatrixClient() {
 }
 
 export async function createRandomMatrixClientAndRoom(
-  access: "public-read-write" | "public-read",
-  encrypted: boolean
+  security: RoomSecuritySetting
 ) {
   const { client, username } = await createRandomMatrixClient();
   const roomName = "@" + username + "/test";
-  const result = await createMatrixRoom(client, roomName, access, encrypted);
+  const result = await createMatrixRoom(client, roomName, security);
 
   if (typeof result === "string" || result.status !== "ok") {
     throw new Error("couldn't create room");
@@ -101,6 +100,7 @@ export async function createMatrixUser(username: string, password: string) {
 
   await matrixClientLoggedIn.startClient({
     lazyLoadMembers: true,
+    initialSyncLimit: 0,
   });
   return matrixClientLoggedIn;
 }
