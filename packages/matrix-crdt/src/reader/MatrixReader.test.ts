@@ -1,12 +1,17 @@
 import got from "got";
-import { request } from "matrix-js-sdk";
+import { MatrixClient, request } from "matrix-js-sdk";
 import { beforeAll, expect, it } from "vitest";
 import { MatrixCRDTEventTranslator } from "../MatrixCRDTEventTranslator";
+import { RoomSecuritySetting } from "../matrixRoomManagement";
+import { createMatrixGuestClient } from "../test-utils/matrixGuestClient";
 import {
   createRandomMatrixClient,
   createRandomMatrixClientAndRoom,
 } from "../test-utils/matrixTestUtil";
-import { ensureMatrixIsRunning } from "../test-utils/matrixTestUtilServer";
+import {
+  ensureMatrixIsRunning,
+  matrixTestConfig,
+} from "../test-utils/matrixTestUtilServer";
 import { sendMessage } from "../util/matrixUtil";
 import { MatrixReader } from "./MatrixReader";
 
@@ -39,6 +44,32 @@ beforeAll(async () => {
   await ensureMatrixIsRunning();
 });
 
+async function getRoomAndTwoUsers(opts: {
+  bobIsGuest: boolean;
+  security: RoomSecuritySetting;
+}) {
+  const setup = await createRandomMatrixClientAndRoom(opts.security);
+
+  const client2 = opts.bobIsGuest
+    ? await createMatrixGuestClient(matrixTestConfig)
+    : (await createRandomMatrixClient()).client;
+
+  if (opts.security.permissions === "private") {
+    // invite user to private room
+    await setup.client.invite(setup.roomId, client2.credentials.userId!);
+  }
+
+  return {
+    alice: {
+      client: setup.client,
+      roomId: setup.roomId,
+    },
+    bob: {
+      client: client2,
+    },
+  };
+}
+
 function validateMessages(messages: any[], count: number) {
   expect(messages.length).toBe(count);
   for (let i = 1; i <= count; i++) {
@@ -46,25 +77,47 @@ function validateMessages(messages: any[], count: number) {
   }
 }
 
-it("handles initial and live messages", async () => {
+it("handles initial and live messages (public room)", async () => {
   let messageId = 0;
-  const setup = await createRandomMatrixClientAndRoom({
-    permissions: "public-read-write",
-    encrypted: false,
+
+  const { alice, bob } = await getRoomAndTwoUsers({
+    bobIsGuest: false,
+    security: {
+      permissions: "public-read-write",
+      encrypted: false,
+    },
   });
 
-  const { client, username } = await createRandomMatrixClient();
-  // const guestClient = await createMatrixGuestClient(matrixTestConfig);
-  await client.joinRoom(setup.roomId);
+  await validateMessagesSentByAliceReceivedByBob(alice, messageId, bob);
+}, 100000);
 
+it("handles initial and live messages (private encrypted room)", async () => {
+  let messageId = 0;
+
+  const { alice, bob } = await getRoomAndTwoUsers({
+    bobIsGuest: false,
+    security: {
+      permissions: "private",
+      encrypted: true,
+    },
+  });
+
+  await validateMessagesSentByAliceReceivedByBob(alice, messageId, bob);
+}, 100000);
+
+async function validateMessagesSentByAliceReceivedByBob(
+  alice: { client: MatrixClient; roomId: string },
+  messageId: number,
+  bob: { client: MatrixClient }
+) {
   // send more than 1 page (30 messages) initially
   for (let i = 0; i < 40; i++) {
-    await sendMessage(setup.client, setup.roomId, "message " + ++messageId);
+    await sendMessage(alice.client, alice.roomId, "message " + ++messageId);
   }
 
   const reader = new MatrixReader(
-    client,
-    setup.roomId,
+    bob.client,
+    alice.roomId,
     new MatrixCRDTEventTranslator()
   );
   try {
@@ -81,11 +134,11 @@ it("handles initial and live messages", async () => {
     reader.startPolling();
 
     while (messageId < 60) {
-      await sendMessage(setup.client, setup.roomId, "message " + ++messageId);
+      await sendMessage(alice.client, alice.roomId, "message " + ++messageId);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
     validateMessages(messages, messageId);
   } finally {
     reader.dispose();
   }
-}, 100000);
+}
