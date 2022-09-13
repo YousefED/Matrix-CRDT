@@ -2,6 +2,10 @@ import { beforeAll, expect, it } from "vitest";
 import { event } from "vscode-lib";
 import * as Y from "yjs";
 import { MatrixProvider } from "./MatrixProvider";
+import {
+  PublicRoomPermissionType,
+  RoomSecuritySetting,
+} from "./matrixRoomManagement";
 import { createMatrixGuestClient } from "./test-utils/matrixGuestClient";
 import {
   createRandomMatrixClient,
@@ -23,9 +27,9 @@ type UnPromisify<T> = T extends Promise<infer U> ? U : T;
 
 async function getRoomAndTwoUsers(opts: {
   bobIsGuest: boolean;
-  roomAccess: "public-read-write" | "public-read";
+  security: RoomSecuritySetting;
 }) {
-  const setup = await createRandomMatrixClientAndRoom(opts.roomAccess);
+  const setup = await createRandomMatrixClientAndRoom(opts.security);
   const doc = new Y.Doc();
   const provider = new MatrixProvider(doc, setup.client, {
     type: "alias",
@@ -40,6 +44,11 @@ async function getRoomAndTwoUsers(opts: {
     type: "alias",
     alias: "#" + setup.roomName + ":" + HOMESERVER_NAME,
   });
+
+  if (opts.security.permissions === "private") {
+    // invite user to private room
+    await setup.client.invite(setup.roomId, client2.credentials.userId!);
+  }
 
   return {
     alice: {
@@ -120,6 +129,7 @@ async function validateTwoWaySync(
   console.log("Bob sending change", bob.client.credentials.userId);
   expect(bob.provider.canWrite).toBe(true);
   bob.doc.getMap("test3").set("key", 1);
+
   await bob.provider.waitForFlush();
   await event.Event.toPromise(alice.provider.onReceivedEvents);
   expect(alice.doc.getMap("test3").get("key")).toBe(1);
@@ -129,26 +139,62 @@ async function validateTwoWaySync(
   bob.provider.dispose();
 }
 
-it("syncs public room guest", async () => {
+for (let permissions of [
+  "public-read-write",
+  "public-read",
+] as PublicRoomPermissionType[]) {
+  it(`Guest is read-only for room set to ${permissions}`, async () => {
+    const users = await getRoomAndTwoUsers({
+      bobIsGuest: true,
+      security: {
+        permissions: "public-read-write",
+        encrypted: false,
+      },
+    });
+    await validateOneWaySync(users);
+  }, 30000);
+}
+
+it("User is read-only for room set to public-read", async () => {
   const users = await getRoomAndTwoUsers({
-    bobIsGuest: true,
-    roomAccess: "public-read-write",
+    bobIsGuest: false,
+    security: {
+      permissions: "public-read",
+      encrypted: false,
+    },
   });
   await validateOneWaySync(users);
 }, 30000);
 
-it("syncs write-only access", async () => {
+it("User can read and write for room set to public-read-write ", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: false,
-    roomAccess: "public-read",
+    security: {
+      permissions: "public-read-write",
+      encrypted: false,
+    },
   });
-  await validateOneWaySync(users);
+  await validateTwoWaySync(users);
 }, 30000);
 
-it("syncs two users writing ", async () => {
+it("User can read and write for room set to private", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: false,
-    roomAccess: "public-read-write",
+    security: {
+      permissions: "private",
+      encrypted: false,
+    },
+  });
+  await validateTwoWaySync(users);
+}, 30000);
+
+it("User can read and write for room set to private, encrypted", async () => {
+  const users = await getRoomAndTwoUsers({
+    bobIsGuest: false,
+    security: {
+      permissions: "private",
+      encrypted: true,
+    },
   });
   await validateTwoWaySync(users);
 }, 30000);
@@ -156,7 +202,10 @@ it("syncs two users writing ", async () => {
 it("syncs with intermediate snapshots ", async () => {
   const users = await getRoomAndTwoUsers({
     bobIsGuest: false,
-    roomAccess: "public-read-write",
+    security: {
+      permissions: "public-read-write",
+      encrypted: false,
+    },
   });
 
   const { alice, bob } = users;
@@ -175,6 +224,8 @@ it("syncs with intermediate snapshots ", async () => {
 
   const val = bob.doc.getMap("test").get("contents") as any;
   expect(val.toJSON()).toEqual(text.toJSON());
+
+  // validate that the snapshot system has been used
   expect(bob.provider.totalEventsReceived).toBeLessThan(20);
 
   alice.provider.dispose();

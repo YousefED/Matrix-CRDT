@@ -3,6 +3,7 @@ import {
   MatrixClient,
   MatrixEvent,
   Method,
+  Room,
   RoomEvent,
 } from "matrix-js-sdk";
 import { event, lifecycle } from "vscode-lib";
@@ -54,30 +55,25 @@ export class MatrixReader extends lifecycle.Disposable {
   /**
    * Only receives messages from rooms the user has joined, and after startClient() has been called
    * (i.e.: they're received via the sync API).
-   *
-   * At this moment, we only poll for events using the /events endpoint.
-   * I.e. the Sync API should not be used (and startClient() should not be called).
-   *
-   * We do this because we don't want the MatrixClient to keep all events in memory.
-   * For yjs, this is not necessary, as events are document updates which are accumulated in the yjs
-   * document, so already stored there.
-   *
-   * In a later version, it might be more efficient to call the /sync API manually
-   * (without relying on the Timeline / sync system in the matrix-js-sdk),
-   * because it allows us to retrieve events for multiple rooms simultaneously, instead of
-   * a seperate /events poll per room
    */
   private matrixRoomListener = (
-    _event: any,
-    _room: any,
+    event: MatrixEvent,
+    room: Room,
     _toStartOfTimeline: boolean
   ) => {
-    console.error("not expected; Room.timeline on MatrixClient");
-    // (disable error when testing / developing e2ee support,
-    // in that case startClient is necessary)
-    throw new Error(
-      "unexpected, we don't use /sync calls for MatrixReader, startClient should not be used on the Matrix client"
-    );
+    // TODO: for e2ee support we now call `startClient`.
+    // For rooms we've joined, the client will now get messages here, but also by polling /events.
+    // We should probably remove the polling if it's not necessary anymore, and handle messages in this function, like below:
+    //
+    // if (room.roomId !== this.roomId) {
+    //   return;
+    // }
+    // console.error("not expected; Room.timeline on MatrixClient");
+    // const events = [event.event];
+    // const shouldSendSnapshot = this.processIncomingEventsForSnapshot(events);
+    // if (events.length) {
+    //   this._onEvents.fire({ events: events, shouldSendSnapshot });
+    // }
   };
 
   /**

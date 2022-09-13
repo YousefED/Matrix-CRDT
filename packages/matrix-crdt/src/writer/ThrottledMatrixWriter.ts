@@ -85,7 +85,13 @@ export class ThrottledMatrixWriter extends lifecycle.Disposable {
       this.setCanWrite(true);
       console.log("sent updates");
     } catch (e: any) {
-      if (e.errcode === "M_FORBIDDEN") {
+      if (
+        e.errcode === "M_FORBIDDEN" ||
+        // the following is an error we get when the room uses e2ee and we're invited, but didn't join yet
+        e.message?.includes(
+          "Room was previously configured to use encryption, but is no longer."
+        )
+      ) {
         console.warn("not allowed to edit document", e);
         this.setCanWrite(false);
 

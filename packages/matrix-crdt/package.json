@@ -33,7 +33,8 @@
     "rimraf": "^3.0.2",
     "typescript": "^4.4.4",
     "vite": "^3.0.0",
-    "vitest": "^0.20.3",
+    "vitest": "^0.23.1",
+    "@vitest/coverage-c8": "^0.23.1",
     "y-protocols": "^1.0.5",
     "yjs": "^13.5.16"
   },

@@ -1,11 +1,22 @@
+export type PublicRoomPermissionType = "public-read-write" | "public-read";
+
+export type RoomSecuritySetting =
+  | {
+      permissions: PublicRoomPermissionType;
+      encrypted: false; // it doesn't make sense to encrypt public rooms
+    }
+  | {
+      permissions: "private"; // TODO: read-only private rooms (using power levels)
+      encrypted: boolean;
+    };
+
 /**
  * Helper function to create a Matrix room suitable for use with MatrixProvider.
- * Access can currently be set to "public-read-write" | "public-read"
  */
 export async function createMatrixRoom(
   matrixClient: any,
   roomName: string,
-  access: "public-read-write" | "public-read"
+  security: RoomSecuritySetting
 ) {
   try {
     const initial_state = [];
@@ -25,7 +36,8 @@ export async function createMatrixRoom(
     initial_state.push({
       type: "m.room.join_rules",
       content: {
-        join_rule: access === "public-read-write" ? "public" : "invite",
+        join_rule:
+          security.permissions === "public-read-write" ? "public" : "invite",
       },
     });
 
@@ -39,17 +51,19 @@ export async function createMatrixRoom(
     });
 
     // for e2ee
-    // initial_state.push({
-    //   type: "m.room.encryption",
-    //   state_key: "",
-    //   content: {
-    //     algorithm: "m.megolm.v1.aes-sha2",
-    //   },
-    // });
+    if (security.encrypted) {
+      initial_state.push({
+        type: "m.room.encryption",
+        state_key: "",
+        content: {
+          algorithm: "m.megolm.v1.aes-sha2",
+        },
+      });
+    }
 
     const ret = await matrixClient.createRoom({
       room_alias_name: roomName,
-      visibility: "public", // Whether this room is visible to the /publicRooms API or not." One of: ["private", "public"]
+      visibility: security.permissions === "private" ? "private" : "public", // Whether this room is visible to the /publicRooms API or not." One of: ["private", "public"]
       name: roomName,
       topic: "",
       initial_state,
@@ -74,8 +88,13 @@ export async function createMatrixRoom(
   }
 }
 
-export async function getMatrixRoomAccess(matrixClient: any, roomId: string) {
+export async function getMatrixRoomSecurity(
+  matrixClient: any,
+  roomId: string
+): Promise<RoomSecuritySetting | { status: "error"; error: any }> {
   let result: any;
+
+  // TODO: what about private rooms?
 
   try {
     result = await matrixClient.getStateEvent(roomId, "m.room.join_rules");
@@ -87,9 +106,15 @@ export async function getMatrixRoomAccess(matrixClient: any, roomId: string) {
   }
 
   if (result.join_rule === "public") {
-    return "public-read-write";
+    return {
+      permissions: "public-read-write",
+      encrypted: false,
+    };
   } else if (result.join_rule === "invite") {
-    return "public-read";
+    return {
+      permissions: "public-read",
+      encrypted: false,
+    };
   } else {
     throw new Error("unsupported join_rule");
   }
@@ -102,15 +127,20 @@ export async function getMatrixRoomAccess(matrixClient: any, roomId: string) {
 export async function updateMatrixRoomAccess(
   matrixClient: any,
   roomId: string,
-  access: "public-read-write" | "public-read"
+  security: RoomSecuritySetting
 ) {
   try {
     await matrixClient.sendStateEvent(
       roomId,
       "m.room.join_rules",
-      { join_rule: access === "public-read-write" ? "public" : "invite" },
+      {
+        join_rule:
+          security.permissions === "public-read-write" ? "public" : "invite",
+      },
       ""
     );
+
+    //  TODO: set encryption
 
     // TODO: add room to space
 

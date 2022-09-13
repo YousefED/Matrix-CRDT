@@ -15,16 +15,16 @@ export async function createMatrixGuestClient(config: { baseUrl: string }) {
 
   // hardcoded overwrites
   (matrixClient as any).canSupportVoip = false;
-  (matrixClient as any).clientOpts = {
-    lazyLoadMembers: true,
-  };
 
   matrixClient.setGuest(true);
   await matrixClient.initCrypto();
-  // don't use startClient (because it will sync periodically), when we're in guest / readonly mode
-  // in guest mode we only use the matrixclient to fetch initial room state, but receive updates via WebRTCProvider
+  matrixClient.setCryptoTrustCrossSignedDevices(true);
+  matrixClient.setGlobalErrorOnUnknownDevices(false);
 
-  // matrixClient.startClient({ lazyLoadMembers: true });
+  await matrixClient.startClient({
+    lazyLoadMembers: true,
+    initialSyncLimit: 0,
+  });
 
   return matrixClient;
 }

@@ -2,20 +2,20 @@ import { MatrixClient } from "matrix-js-sdk";
 import { event, lifecycle } from "vscode-lib";
 import * as awarenessProtocol from "y-protocols/awareness";
 import * as Y from "yjs";
-import { signObject, verifyObject } from "./util/authUtil";
-import { MatrixMemberReader } from "./memberReader/MatrixMemberReader";
-import { MatrixReader, MatrixReaderOptions } from "./reader/MatrixReader";
-import { SignedWebrtcProvider } from "./SignedWebrtcProvider";
-import {
-  ThrottledMatrixWriter,
-  ThrottledMatrixWriterOptions,
-} from "./writer/ThrottledMatrixWriter";
-import { decodeBase64 } from "./util/olmlib";
-import { arrayBuffersAreEqual } from "./util/binary";
 import {
   MatrixCRDTEventTranslator,
   MatrixCRDTEventTranslatorOptions,
 } from "./MatrixCRDTEventTranslator";
+import { MatrixMemberReader } from "./memberReader/MatrixMemberReader";
+import { MatrixReader, MatrixReaderOptions } from "./reader/MatrixReader";
+import { SignedWebrtcProvider } from "./SignedWebrtcProvider";
+import { signObject, verifyObject } from "./util/authUtil";
+import { arrayBuffersAreEqual } from "./util/binary";
+import { decodeBase64 } from "./util/olmlib";
+import {
+  ThrottledMatrixWriter,
+  ThrottledMatrixWriterOptions,
+} from "./writer/ThrottledMatrixWriter";
 
 const DEFAULT_OPTIONS = {
   enableExperimentalWebrtcSync: false,
