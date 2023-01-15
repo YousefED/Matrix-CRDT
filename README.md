@@ -93,6 +93,8 @@ yarray.observe((event) => {
 yarray.push([1]); // => "new sum: 1"
 ```
 
+**Note for Vite / non-webpack** If you're using Vite, or other non-webpack builds, note that matrix-js-sdk depends on certain polyfills available. See the [Vite example](examples/todo-simple-react-vite/) and [this issue on matrix-js-sdk](https://github.com/matrix-org/matrix-js-sdk/issues/2903).
+
 ## SyncedStore
 
 You can also use [SyncedStore](https://syncedstore.org/docs/) and use Matrix-CRDT as SyncProvider.

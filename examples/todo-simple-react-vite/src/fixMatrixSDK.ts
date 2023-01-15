@@ -4,7 +4,7 @@ import * as process from "process";
 /**
  * Matrix-js-sdk doesn't work nicely without these globals
  *
- * Also needs global = window, set in vite.config.ts
+ * Also needs global = window, and nodePolyfills set in vite.config.ts
  */
 export function applyMatrixSDKPolyfills() {
   (window as any).Buffer = Buffer;
