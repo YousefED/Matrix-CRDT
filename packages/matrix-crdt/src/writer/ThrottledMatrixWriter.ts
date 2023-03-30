@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import { MatrixClient } from "matrix-js-sdk";
 import { event, lifecycle } from "vscode-lib";
 import * as Y from "yjs";
