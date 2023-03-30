@@ -1,6 +1,6 @@
 {
   "name": "todo",
-  "version": "0.2.0",
+  "version": "0.2.1-alpha.0",
   "private": true,
   "dependencies": {
     "@primer/react": "34.1.0",
@@ -11,7 +11,7 @@
     "@types/react-dom": "^17.0.10",
     "babel-loader": "8.1.0",
     "eslint": "^7.11.0",
-    "matrix-crdt": "^0.2.0",
+    "matrix-crdt": "^0.2.1-alpha.0",
     "matrix-js-sdk": "^19.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
