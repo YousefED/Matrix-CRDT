@@ -76,7 +76,7 @@ matrixClient.clientOpts = {
 const ydoc = new Y.Doc();
 const provider = new MatrixProvider(ydoc, matrixClient, {
   type: "alias",
-  alias: "matrix-room-alias",
+  alias: "#matrix-room-alias:matrix.org",
 });
 provider.initialize();
 
