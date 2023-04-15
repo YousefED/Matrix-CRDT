@@ -5,7 +5,7 @@ import * as awarenessProtocol from "y-protocols/awareness";
 import * as syncProtocol from "y-protocols/sync";
 import * as Y from "yjs"; // eslint-disable-line
 import { globalRooms } from "./globalResources";
-import { WebrtcProvider } from "./WebrtcProvider";
+import { WebRTCOptions, WebrtcProvider } from "./WebrtcProvider";
 import * as logging from "lib0/logging";
 
 const log = logging.createModuleLogger("y-webrtc");
@@ -139,7 +139,7 @@ export class DocWebrtcProvider extends WebrtcProvider {
   constructor(
     roomName: string,
     private readonly doc: Y.Doc,
-    opts?: any,
+    opts?: WebRTCOptions,
     public readonly awareness = new awarenessProtocol.Awareness(doc)
   ) {
     super(roomName, opts);

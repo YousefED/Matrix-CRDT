@@ -29,6 +29,14 @@ const openRoom = (
   globalRooms.set(name, room);
   return room;
 };
+export interface WebRTCOptions {
+  signaling?: string[];
+  password?: string;
+  maxConns?: number;
+  filterBcConns?: boolean;
+  /** simple-peer options. See https://github.com/feross/simple-peer#peer--new-peeropts */
+  peerOpts?: any;
+}
 
 export abstract class WebrtcProvider extends Observable<string> {
   // public readonly awareness: awarenessProtocol.Awareness;
@@ -59,12 +67,12 @@ export abstract class WebrtcProvider extends Observable<string> {
         "wss://y-webrtc-signaling-eu.herokuapp.com",
         "wss://y-webrtc-signaling-us.herokuapp.com",
       ],
-      password = undefined as undefined | string,
+      password,
       // awareness = new awarenessProtocol.Awareness(doc),
       maxConns = 20 + math.floor(random.rand() * 15), // the random factor reduces the chance that n clients form a cluster
       filterBcConns = true,
-      peerOpts = {}, // simple-peer options. See https://github.com/feross/simple-peer#peer--new-peeropts
-    } = {}
+      peerOpts = {},
+    }: WebRTCOptions = {}
   ) {
     super();
     this.filterBcConns = filterBcConns;

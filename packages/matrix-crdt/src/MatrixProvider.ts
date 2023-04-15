@@ -16,9 +16,11 @@ import {
   MatrixCRDTEventTranslator,
   MatrixCRDTEventTranslatorOptions,
 } from "./MatrixCRDTEventTranslator";
+import { WebRTCOptions } from "./webrtc/WebrtcProvider";
 
 const DEFAULT_OPTIONS = {
   enableExperimentalWebrtcSync: false,
+  experimentalWebrtcPeers: [] as string[],
   reader: {} as MatrixReaderOptions,
   writer: {} as ThrottledMatrixWriterOptions,
   translator: {} as MatrixCRDTEventTranslatorOptions,
@@ -265,15 +267,10 @@ export class MatrixProvider extends lifecycle.Disposable {
    * TODO: we should probably extract this from MatrixProvider so that
    * API consumers can instantiate / configure this seperately
    */
-  private async initializeWebrtc() {
+  private async initializeWebrtc(options?: WebRTCOptions) {
     if (!this._roomId) {
       throw new Error("not initialized");
     }
-    /*
-    TODO:
-    - implement password
-    - allow options to be passed to WebRtcprovider (e.g.: signalling servers which now default to those supplied by yjs)
-    */
     if (!this.reader) {
       throw new Error("needs reader to initialize webrtc");
     }
