@@ -1,7 +1,7 @@
 {
   "name": "todo-vite",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.1-alpha.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,23 +17,23 @@
     "@types/react-dom": "^17.0.10",
     "babel-loader": "8.1.0",
     "eslint": "^7.11.0",
-    "matrix-crdt": "^0.2.0",
+    "events": "3.3.0",
+    "matrix-crdt": "^0.2.1-alpha.1",
     "matrix-js-sdk": "^19.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "styled-components": "^5.3.3",
     "typescript": "^4.4.4",
     "url": "^0.11.0",
     "y-protocols": "^1.0.5",
-    "yjs": "^13.5.16",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "events": "3.3.0"
+    "yjs": "^13.5.16"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
+    "rollup-plugin-polyfill-node": "^0.10.2",
     "typescript": "^4.6.4",
-    "vite": "^3.2.3",
-    "rollup-plugin-polyfill-node": "^0.10.2"
+    "vite": "^3.2.3"
   }
 }

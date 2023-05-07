@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import throttle from "lodash/throttle";
 import { MatrixClient } from "matrix-js-sdk";
 import { event, lifecycle } from "vscode-lib";
 import * as Y from "yjs";
@@ -37,8 +37,8 @@ export class ThrottledMatrixWriter extends lifecycle.Disposable {
   private readonly onSentAllEvents: event.Event<void> =
     this._onSentAllEvents.event;
 
-  private readonly throttledFlushUpdatesToMatrix: _.DebouncedFunc<
-    () => Promise<void>
+  private readonly throttledFlushUpdatesToMatrix: ReturnType<
+    typeof throttle<() => Promise<void>>
   >;
 
   private readonly opts: typeof DEFAULT_OPTIONS;
@@ -50,7 +50,7 @@ export class ThrottledMatrixWriter extends lifecycle.Disposable {
   ) {
     super();
     this.opts = { ...DEFAULT_OPTIONS, ...opts };
-    this.throttledFlushUpdatesToMatrix = _.throttle(
+    this.throttledFlushUpdatesToMatrix = throttle(
       this.flushUpdatesToMatrix,
       this.canWrite
         ? this.opts.flushInterval
