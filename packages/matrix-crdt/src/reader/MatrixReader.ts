@@ -144,7 +144,6 @@ export class MatrixReader extends lifecycle.Disposable {
     }
     try {
       this.pendingPollRequest = this.matrixClient.http.authedRequest(
-        undefined as any,
         Method.Get,
         "/events",
         {
