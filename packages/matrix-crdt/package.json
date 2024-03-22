@@ -28,7 +28,7 @@
     "got": "^11.8.2",
     "jest-environment-jsdom": "^28.1.3",
     "lib0": "^0.2.42",
-    "matrix-js-sdk": "^19.4.0",
+    "matrix-js-sdk": "31.4.0",
     "qs": "^6.10.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.4",
