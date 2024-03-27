@@ -70,7 +70,7 @@ export class MatrixReader extends lifecycle.Disposable {
   private matrixRoomListener = (
     _event: any,
     _room: any,
-    _toStartOfTimeline: boolean
+    _toStartOfTimeline: boolean | undefined
   ) => {
     console.error("not expected; Room.timeline on MatrixClient");
     // (disable error when testing / developing e2ee support,
@@ -144,7 +144,6 @@ export class MatrixReader extends lifecycle.Disposable {
     }
     try {
       this.pendingPollRequest = this.matrixClient.http.authedRequest(
-        undefined as any,
         Method.Get,
         "/events",
         {
@@ -195,7 +194,7 @@ export class MatrixReader extends lifecycle.Disposable {
    */
   public async getInitialDocumentUpdateEvents(typeFilter?: string) {
     let ret: any[] = [];
-    let token = "";
+    let token: string | null = null;
     let hasNextPage = true;
     let lastEventInSnapshot: string | undefined;
     while (hasNextPage) {
@@ -229,7 +228,7 @@ export class MatrixReader extends lifecycle.Disposable {
         }
       }
 
-      token = res.end;
+      token = res.end || null;
       if (!this.latestToken) {
         this.latestToken = res.start;
       }
