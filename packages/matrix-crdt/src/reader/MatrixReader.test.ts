@@ -1,5 +1,4 @@
-import got from "got";
-import { MatrixClient, request } from "matrix-js-sdk";
+import { MatrixClient } from "matrix-js-sdk";
 import * as qs from "qs";
 import { beforeAll, expect, it } from "vitest";
 import { autocannonSeparateProcess } from "../benchmark/util";
@@ -15,29 +14,6 @@ import { sendMessage } from "../util/matrixUtil";
 import { MatrixReader } from "./MatrixReader";
 
 const { Worker, isMainThread } = require("worker_threads");
-
-// change http client in matrix, this is faster than request when we have many outgoing requests
-request((opts: any, cb: any) => {
-  opts.url = opts.url || opts.uri;
-  opts.searchParams = opts.qs;
-  opts.decompress = opts.gzip;
-  // opts.responseType = "json";
-  opts.throwHttpErrors = false;
-  if (!opts.json) {
-    delete opts.json;
-  }
-  const responsePromise = got(opts);
-  const ret = responsePromise.then(
-    (response) => {
-      cb(undefined, response, response.body);
-    },
-    (e) => {
-      cb(e, e.response, e.response.body);
-    }
-  );
-  (ret as any).abort = responsePromise.cancel;
-  return ret;
-});
 
 beforeAll(async () => {
   await ensureMatrixIsRunning();

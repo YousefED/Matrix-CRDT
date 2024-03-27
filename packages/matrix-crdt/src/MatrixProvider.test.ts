@@ -6,7 +6,6 @@ import { createMatrixGuestClient } from "./test-utils/matrixGuestClient";
 import {
   createRandomMatrixClient,
   createRandomMatrixClientAndRoom,
-  initMatrixSDK,
 } from "./test-utils/matrixTestUtil";
 import {
   ensureMatrixIsRunning,
@@ -15,7 +14,6 @@ import {
 } from "./test-utils/matrixTestUtilServer";
 
 beforeAll(async () => {
-  initMatrixSDK();
   await ensureMatrixIsRunning();
 });
 
